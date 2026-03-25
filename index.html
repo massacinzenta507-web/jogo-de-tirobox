@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Jogo 2D - Painel Admin</title>
+    <style>
+        /* Estilo Dark igual ao Discord/Roblox */
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-screen {
+            width: 90vw;
+            height: 300px;
+            background: #333;
+            border: 4px solid #555;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* PAINEL DE ADMIN */
+        #admin-panel {
+            background: #2c2f33;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #7289da;
+            width: 90vw;
+            max-width: 400px;
+            display: none; /* Escondido por padrão */
+        }
+
+        h2 { color: #7289da; margin-top: 0; }
+
+        .status {
+            background: #23272a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-lvl { background: #f1c40f; color: black; }
+        .btn-money { background: #2ecc71; color: white; }
+        .btn-box { background: #e67e22; color: white; }
+        .btn-inf { background: #e74c3c; color: white; }
+
+        button:active { transform: scale(0.95); }
+
+        /* Login simples */
+        #login-area { margin-bottom: 20px; }
+        input { padding: 10px; border-radius: 5px; border: none; }
+    </style>
+</head>
+<body>
+
+    <h1>🎮 Arena 2D (Alpha)</h1>
+
+    <div id="login-area">
+        <input type="text" id="user-input" placeholder="Digite seu usuário...">
+        <button onclick="checkLogin()" style="background: #7289da; color: white;">Entrar</button>
+    </div>
+
+    <div class="game-screen" id="arena">
+        <p id="game-msg">Aguardando Admin...</p>
+        </div>
+
+    <div id="admin-panel">
+        <h2>🛠️ Painel Admin (admin222)</h2>
+        <div class="status">
+            <p>Nível: <span id="display-lvl">1</span></p>
+            <p>Arma: <span id="display-weapon">Pistola</span></p>
+            <p>Dinheiro: <span id="display-money">0</span></p>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-lvl" onclick="adminSystem.subirNivel()">+1 Nível</button>
+            <button class="btn-money" onclick="adminSystem.dinheiroInfinito()">Dinheiro ∞</button>
+            <button class="btn-box" onclick="adminSystem.spawnCustomBox('level')">Spawn Box</button>
+            <button class="btn-inf" onclick="adminSystem.municaoInfinita()">Munição ∞</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DO JOGO ---
+        let player = {
+            user: "",
+            level: 1,
+            money: 0,
+            weapon: "Pistola",
+            isInfinite: false
+        };
+
+        const arsenal = { 1: "Pistola", 2: "SMG", 3: "AK-47", 4: "Shotgun", 5: "Bazuca" };
+
+        function checkLogin() {
+            let input = document.getElementById('user-input').value;
+            if (input === "admin222") {
+                player.user = "admin222";
+                document.getElementById('admin-panel').style.display = "block";
+                document.getElementById('login-area').style.display = "none";
+                document.getElementById('game-msg').innerText = "Bem-vindo, Gui! Modo Admin Ativo.";
+            } else {
+                alert("Usuário incorreto!");
+            }
+        }
+
+        const adminSystem = {
+            updateUI: function() {
+                document.getElementById('display-lvl').innerText = player.level;
+                document.getElementById('display-weapon').innerText = player.weapon;
+                document.getElementById('display-money').innerText = player.money === Infinity ? "INFINITO" : player.money;
+            },
+
+            subirNivel: function() {
+                player.level++;
+                player.weapon = arsenal[player.level] || "Arma Suprema";
+                this.updateUI();
+            },
+
+            dinheiroInfinito: function() {
+                player.money = Infinity;
+                this.updateUI();
+            },
+
+            municaoInfinita: function() {
+                player.isInfinite = true;
+                alert("Munição Infinita Ativada!");
+            },
+
+            spawnCustomBox: function(tipo) {
+                const arena = document.getElementById('arena');
+                const box = document.createElement('div');
+                box.innerText = "📦";
+                box.style.position = "absolute";
+                box.style.left = Math.random() * 80 + "%";
+                box.style.top = Math.random() * 80 + "%";
+                box.style.fontSize = "30px";
+                arena.appendChild(box);
+                setTimeout(() => box.remove(), 5000); // Some em 5 seg
+            }
+        };
+    </script>
+</body>
+</html>
